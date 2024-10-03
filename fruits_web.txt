@@ -1,0 +1,39 @@
+fruits-web-be/
+├── .env
+├── manage.py
+└── fruits_web/
+    ├── apps/
+    │   └── platforms/
+    │       ├── migrations/
+    │       │   ├── __init__.py
+    │       ├── models_container/
+    │       │   ├── __init__.py
+    │       │   └── user.py
+    │       ├── permissions/
+    │       │   ├── __init__.py
+    │       │   └── permissions.py
+    │       ├── serializers_container/
+    │       │   ├── __init__.py
+    │       │   └── user.py
+    │       ├── views_container/
+    │       │   ├── __init__.py
+    │       │   ├── user.py
+    │       │   
+    │       ├── utils/
+    │       │   ├── __init__.py
+    │       │   └── util.py
+    │       ├── routers/
+    │       │   ├── __init__.py
+    │       │   └── router.py 
+    │       ├── admin.py
+    │       ├── apps.py
+    │       ├── models.py
+    │       ├── serializers.py
+    │       ├── tests.py
+    │       ├── urls.py
+    │       └── views.py
+    ├── __init__.py
+    ├── asgi.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py
