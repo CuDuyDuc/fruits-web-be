@@ -18,7 +18,7 @@ class CustomUserManager(UserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         if extra_fields.get('is_active') is not True:
             raise ValueError('Superuser must have is_active=True.')
-        extra_fields.setdefault('role', 'SUPER_ADMIN')
+        extra_fields.setdefault('role', 'super-admin')
         return self._create_user(email, password, **extra_fields)
 
 
@@ -32,7 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
-    role = models.CharField(max_length=30, null=False, blank=False, default='USER')
+    role = models.CharField(max_length=30, null=False, blank=False, default='user')
     objects = CustomUserManager()
     groups = models.ManyToManyField(
         'auth.Group',
