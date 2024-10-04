@@ -33,6 +33,9 @@ class UpdateProductViewAPI(APIView):
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
             return Response({"error": "Sản phẩm không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
+        user = request.user
+        if product.id_user != user:
+            return Response({"error": "Bạn không có quyền sửa sản phẩm này."}, status=status.HTTP_403_FORBIDDEN)
         serializer = self.serializer_class(product, data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
