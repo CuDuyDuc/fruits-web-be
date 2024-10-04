@@ -7,6 +7,7 @@ from django.utils.encoding import force_str
 from rest_framework_simplejwt.tokens import RefreshToken
 import jwt
 from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password
 from fruits_web.apps.platforms.serializers_container.user import *
 from fruits_web.apps.platforms.serializers_container.product import *
 from fruits_web.apps.platforms.serializers_container.cart import *

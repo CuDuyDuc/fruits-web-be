@@ -1,4 +1,4 @@
-from fruits_web.apps.platforms.serializers_container import serializers,User,RefreshToken,auth,AuthenticationFailed
+from fruits_web.apps.platforms.serializers_container import serializers,User,RefreshToken,auth,AuthenticationFailed, make_password
 
 class UserSerializer (serializers.ModelSerializer):
     class Meta:
@@ -96,3 +96,20 @@ class CreateShopSerializer(serializers.ModelSerializer):
             'refresh_token':str(refreshToken),
             'access_token': str(refreshToken.access_token),
         }
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False)  
+    username = serializers.CharField(required=False)  
+    password = serializers.CharField(write_only=True, required=False)  
+    class Meta:
+        model = User
+        fields = ['email','password','username','is_active','role']
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email',instance.email)
+        instance.username = validated_data.get('username',instance.username)
+        instance.is_active = validated_data.get('is_active',instance.is_active)
+        instance.role = validated_data.get('role',instance.role)
+        if 'password' in validated_data:
+            instance.password = make_password(validated_data['password'])
+        instance.save()
+        return instance

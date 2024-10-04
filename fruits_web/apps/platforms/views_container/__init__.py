@@ -1,4 +1,4 @@
-from fruits_web.apps.platforms.serializers_container import LoginSerializer, RegisterSerializer, UserSerializer, AddProductSerializer, UpdateProductSerializer, AddCartSerializer, UpdateCartSerializer, CreateShopSerializer
+from fruits_web.apps.platforms.serializers_container import LoginSerializer, RegisterSerializer, UserSerializer, AddProductSerializer, UpdateProductSerializer, AddCartSerializer, UpdateCartSerializer, CreateShopSerializer, UpdateUserSerializer
 from fruits_web.apps.platforms.models_container import User, Product, Cart
 from rest_framework import generics, status
 from fruits_web.apps.platforms.views_container.user import *

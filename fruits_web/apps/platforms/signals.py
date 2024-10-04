@@ -7,7 +7,7 @@ from django.contrib.auth.hashers import make_password
 @receiver(post_migrate)
 def create_admin_user_if_not_exists(sender, **kwargs):
     try:
-        if sender.name == 'fruits_web.apps.platforms':  # Chỉ chạy cho ứng dụng của bạn
+        if sender.name == 'fruits_web.apps.platforms':  
             if not User.objects.filter(email='admin123@gmail.com').exists():
                 user = User(
                     email='admin123@gmail.com',
