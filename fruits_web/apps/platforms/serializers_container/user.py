@@ -3,8 +3,8 @@ from fruits_web.apps.platforms.serializers_container import serializers,User,Ref
 class UserSerializer (serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username','password']
-        
+        fields = ['username','email', 'image']
+              
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=80, min_length=6, write_only=True)
 

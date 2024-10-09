@@ -3,10 +3,13 @@ from fruits_web.apps.platforms.permissions import IsShop, IsAuthenticated
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework import parsers, renderers
 
 class AddProductViewAPI(generics.CreateAPIView):
     permission_classes = [IsShop] 
     queryset = Product.objects.all()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AddProductSerializer
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -30,6 +33,8 @@ class ListProductAPIView(generics.ListAPIView):
 class UpdateProductViewAPI(APIView):
     permission_classes = [IsShop] 
     queryset = Product.objects.all()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    renderer_classes = (renderers.JSONRenderer,)
     serializer_class = UpdateProductSerializer
     
     @swagger_auto_schema(

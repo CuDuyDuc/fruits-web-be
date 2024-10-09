@@ -1,9 +1,10 @@
 from fruits_web.apps.platforms.serializers_container import serializers, Product
 
 class AddProductSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True)
     class Meta:
         model = Product
-        fields = ['name','description','price','quantity']
+        fields = ['name','description','image','price','quantity']
     def create(self, validated_data):
         user = self.context['request'].user
         product = Product(id_user=user,**validated_data)
@@ -13,7 +14,7 @@ class AddProductSerializer(serializers.ModelSerializer):
 class UpdateProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name','description','price','quantity']
+        fields = ['name','description', 'image','price','quantity']
     def update(self, instance, validated_data):
         user = self.context['request'].user
         if instance.id_user != user:
@@ -22,10 +23,11 @@ class UpdateProductSerializer(serializers.ModelSerializer):
         instance.description = validated_data.get('description', instance.description)
         instance.price = validated_data.get('price', instance.price)
         instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.image = validated_data.get('image', instance.image)
         instance.save()
         return instance
     
 class ListProductSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'quantity']
+        fields = ['id', 'name', 'description', 'image', 'price', 'quantity']

@@ -1,5 +1,5 @@
 from fruits_web.apps.platforms.models_container import UserManager, make_password, uuid, AbstractBaseUser, PermissionsMixin, models, RefreshToken
-
+import os,random
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -21,13 +21,17 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('role', 'super-admin')
         return self._create_user(email, password, **extra_fields)
 
-
+def random_image_filename(instance, filename):
+        extension = filename.split('.')[-1]
+        new_filename = f"{random.randint(10000000, 99999999)}.{extension}"
+        return os.path.join('products/', new_filename)
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(null=False, blank=False, unique=True)
     password = models.CharField(max_length=128, blank=True)
     username = models.CharField(max_length=128, null=False, blank=False)
     full_name = models.CharField(max_length=128, null=True, blank=False)
+    image = models.ImageField(random_image_filename,default='image.png')
     is_active = models.BooleanField(default=True, blank=True)
     is_verified = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'

@@ -2,10 +2,13 @@ from fruits_web.apps.platforms.views_container import generics, Cart, AddCartSer
 from fruits_web.apps.platforms.permissions import IsUser
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import renderers, parsers
 
 class AddCartViewAPI (generics.CreateAPIView):
     permission_classes = [IsUser] 
     queryset = Cart.objects.all()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AddCartSerializer
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -27,6 +30,8 @@ class ListCartViewAPI(generics.ListAPIView):
 class UpdateCartViewAPI(APIView):
     permission_classes = [IsUser]
     queryset = Cart.objects.all()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    renderer_classes = (renderers.JSONRenderer,)
     serializer_class = UpdateCartSerializer
 
     @swagger_auto_schema(
