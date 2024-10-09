@@ -24,3 +24,8 @@ class UpdateProductSerializer(serializers.ModelSerializer):
         instance.quantity = validated_data.get('quantity', instance.quantity)
         instance.save()
         return instance
+    
+class ListProductSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'quantity']

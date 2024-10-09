@@ -1,5 +1,5 @@
-from fruits_web.apps.platforms.views_container import generics, Product, AddProductSerializer, Response, status, UpdateProductSerializer
-from fruits_web.apps.platforms.permissions import IsShop
+from fruits_web.apps.platforms.views_container import generics, Product, AddProductSerializer, Response, status, UpdateProductSerializer, ListProductSerializer
+from fruits_web.apps.platforms.permissions import IsShop, IsAuthenticated
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -17,6 +17,15 @@ class AddProductViewAPI(generics.CreateAPIView):
             'data': serializer.data  # Trả về dữ liệu đã lưu
         }, status=status.HTTP_201_CREATED)
     
+class ListProductAPIView(generics.ListAPIView):
+    permission_classes = [IsShop]
+    serializer_class = ListProductSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return Product.objects.all()
+        return Product.objects.filter(id_user = user)
 
 class UpdateProductViewAPI(APIView):
     permission_classes = [IsShop] 
@@ -56,3 +65,32 @@ class DeleteProductViewAPI(APIView):
             return Response({"error": "Bạn không có quyền xóa sản phẩm này."}, status=status.HTTP_403_FORBIDDEN)
         product.delete()
         return Response({"message": "Xóa sản phẩm thành công."}, status=status.HTTP_200_OK)
+    
+class SearchProductAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ListProductSerializer
+
+    id_param = openapi.Parameter('id', openapi.IN_QUERY, description="UUID of the product", type=openapi.TYPE_STRING)
+    name_param = openapi.Parameter('name', openapi.IN_QUERY, description="Name of the product", type=openapi.TYPE_STRING)
+    price_param = openapi.Parameter('price', openapi.IN_QUERY, description="Price of the product", type=openapi.TYPE_NUMBER)
+
+    @swagger_auto_schema(manual_parameters=[id_param, name_param, price_param])
+    def get(self, request, *args, **kwargs):
+        products = Product.objects.all()
+        
+        product_id = request.query_params.get('id', None)
+        name = request.query_params.get('name', None)
+        price = request.query_params.get('price', None)
+        
+        if product_id:
+            products = products.filter(id=product_id)
+        if name:
+            products = products.filter(name__icontains=name)
+        if price:
+            products = products.filter(price=price)
+
+        if not products.exists():
+            return Response({"message": "Không có sản phẩm nào thỏa mãn điều kiện tìm kiếm."}, status=404)
+
+        serializer = self.serializer_class(products, many=True)
+        return Response(serializer.data)

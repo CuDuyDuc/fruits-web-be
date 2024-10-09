@@ -1,4 +1,4 @@
-from fruits_web.apps.platforms.views_container import generics, Cart, AddCartSerializer, Response, status, UpdateCartSerializer
+from fruits_web.apps.platforms.views_container import generics, Cart, AddCartSerializer, Response, status, UpdateCartSerializer,ListCartSerializer
 from fruits_web.apps.platforms.permissions import IsUser
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
@@ -18,7 +18,7 @@ class AddCartViewAPI (generics.CreateAPIView):
         
 class ListCartViewAPI(generics.ListAPIView):
     permission_classes = [IsUser]
-    serializer_class = AddCartSerializer
+    serializer_class = ListCartSerializer
 
     def get_queryset(self):
         user = self.request.user

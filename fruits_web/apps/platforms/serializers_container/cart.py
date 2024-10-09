@@ -1,4 +1,15 @@
-from fruits_web.apps.platforms.serializers_container import serializers, Cart
+from fruits_web.apps.platforms.serializers_container import serializers, Cart, Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Product
+        fields = '__all__'
+
+class ListCartSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(source='id_product')
+    class Meta:
+        model = Cart
+        fields =['product','id_user','quantity']
 
 class AddCartSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +22,7 @@ class AddCartSerializer(serializers.ModelSerializer):
         try:
             cart_item = Cart.objects.get(id_product=id_product, id_user=user)
             cart_item.quantity += validated_data.get('quantity', 1)
-            cart_item.total_money = cart_item.quantity * cart_item.id_product.price  # Giả sử bạn có giá trong Product model
+            cart_item.total_money = cart_item.quantity * cart_item.id_product.price  
             cart_item.save()
             return cart_item
         except Cart.DoesNotExist:
