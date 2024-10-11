@@ -98,17 +98,17 @@ class CreateShopSerializer(serializers.ModelSerializer):
         }
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=False)  
     username = serializers.CharField(required=False)  
     password = serializers.CharField(write_only=True, required=False)  
+    image = serializers.ImageField(required=False)
     class Meta:
         model = User
-        fields = ['email','password','username','is_active','role']
+        fields = ['password','username','is_active','role', 'image']
     def update(self, instance, validated_data):
-        instance.email = validated_data.get('email',instance.email)
         instance.username = validated_data.get('username',instance.username)
         instance.is_active = validated_data.get('is_active',instance.is_active)
         instance.role = validated_data.get('role',instance.role)
+        instance.image = validated_data.get('image', instance.image)
         if 'password' in validated_data:
             instance.password = make_password(validated_data['password'])
         instance.save()

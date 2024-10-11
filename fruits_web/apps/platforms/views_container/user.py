@@ -64,24 +64,22 @@ class CreateShopAPIView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
     
 class UpdateUserViewAPI(APIView):
-    permission_classes =[IsAdmin]
+    permission_classes = [IsAdmin]
     queryset = User.objects.all()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = UpdateUserSerializer
-    @swagger_auto_schema(
-        operation_description="Cập nhật người dùng bằng UUID và nhập dữ liệu trong body JSON",
-        request_body=UpdateUserSerializer,
-        responses={200: "Cập nhật thành công", 404: "Người dùng không tồn tại"}
-    )
-    def put(self, request,pk, *args, **kwargs):
+
+    def update_user(self, request, pk, partial):
         try:
             user = User.objects.get(pk=pk)
         except User.DoesNotExist:
             return Response({"error": "Người dùng không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(user, data=request.data, partial=True, context={'request': request})
+
+        serializer = self.serializer_class(user, data=request.data, partial=partial, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        user_updated = serializer.save() 
+        user_updated = serializer.save()
+
         return Response({
             'message': 'Cập nhật thành công',
             'data': {
@@ -91,11 +89,28 @@ class UpdateUserViewAPI(APIView):
                 'role': user_updated.role
             }
         }, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_description="Cập nhật người dùng bằng UUID và nhập dữ liệu trong body JSON",
+        request_body=UpdateUserSerializer,
+        responses={200: "Cập nhật thành công", 404: "Người dùng không tồn tại"}
+    )
+    def put(self, request, pk, *args, **kwargs):
+        return self.update_user(request, pk, partial=False)
+
+    @swagger_auto_schema(
+        operation_description="Cập nhật một phần thông tin người dùng bằng UUID và nhập dữ liệu trong body JSON",
+        request_body=UpdateUserSerializer,
+        responses={200: "Cập nhật thành công", 404: "Người dùng không tồn tại"}
+    )
+    def patch(self, request, pk, *args, **kwargs):
+        return self.update_user(request, pk, partial=True)
+
         
 class SearchUserViewAPI(generics.ListAPIView):
     permission_classes = [IsAdmin]
     serializer_class = UserSerializer
-    
+    pagination_class = None
     id_param = openapi.Parameter('id', openapi.IN_QUERY, description="UUID of the user", type=openapi.TYPE_STRING)
     username_param = openapi.Parameter('username', openapi.IN_QUERY, description="Username of the user", type=openapi.TYPE_STRING)
     email_param = openapi.Parameter('email', openapi.IN_QUERY, description="Email of the email", type=openapi.TYPE_STRING)
@@ -111,12 +126,12 @@ class SearchUserViewAPI(generics.ListAPIView):
         if user_id:
             users = users.filter(id=user_id)
         if username:
-            users = users.filter(name__icontains=username)
+            users = users.filter(username=username)
         if email:
-            users = users.filter(price=email)
+            users = users.filter(email=email)
 
         if not users.exists():
-            return Response({"message": "Không có sản phẩm nào thỏa mãn điều kiện tìm kiếm."}, status=404)
+            return Response({"message": "Không có người dùng nào thỏa mãn điều kiện tìm kiếm."}, status=404)
 
         serializer = self.serializer_class(users, many=True)
         return Response(serializer.data)
@@ -137,6 +152,31 @@ class GetUserById(APIView):
         
         serializer = self.serializer_class(user_by_id)
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+    
+class UpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UpdateUserSerializer
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    @swagger_auto_schema(
+        operation_description="Cập nhật người dùng bằng UUID và nhập dữ liệu trong body JSON",
+        request_body=UpdateUserSerializer,
+        responses={200: "Cập nhật thành công", 404: "Người dùng không tồn tại"}
+    )
+    def patch(self, request, *args, **kwargs):
+        user = request.user  # Lấy thông tin người dùng đã đăng nhập
+        serializer = self.serializer_class(user, data=request.data, partial=True, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        updated_user = serializer.save()
+
+        return Response({
+            'message': 'Thông tin cá nhân đã được cập nhật thành công',
+            'data': {
+                'username': updated_user.username,
+                'email': updated_user.email,
+                'image': updated_user.image.url if updated_user.image else None
+            }
+        }, status=status.HTTP_200_OK)
+
             
             
         

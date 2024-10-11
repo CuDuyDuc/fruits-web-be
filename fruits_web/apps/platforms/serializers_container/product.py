@@ -1,4 +1,4 @@
-from fruits_web.apps.platforms.serializers_container import serializers, Product
+from fruits_web.apps.platforms.serializers_container import serializers, Product, UserSerializer
 
 class AddProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=True)
@@ -12,6 +12,8 @@ class AddProductSerializer(serializers.ModelSerializer):
         return product
         
 class UpdateProductSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=False)  
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, required = False)
     class Meta:
         model = Product
         fields = ['name','description', 'image','price','quantity']
@@ -28,6 +30,8 @@ class UpdateProductSerializer(serializers.ModelSerializer):
         return instance
     
 class ListProductSerializer(serializers.ModelSerializer):
+    user = UserSerializer(source='id_user')
     class Meta: 
         model = Product
-        fields = ['id', 'name', 'description', 'image', 'price', 'quantity']
+        fields = ['id', 'name', 'description', 'image', 'price', 'quantity', 'id_user', 'user']
+        

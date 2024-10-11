@@ -22,7 +22,7 @@ class AddCartViewAPI (generics.CreateAPIView):
 class ListCartViewAPI(generics.ListAPIView):
     permission_classes = [IsUser]
     serializer_class = ListCartSerializer
-
+    pagination_class = None
     def get_queryset(self):
         user = self.request.user
         return Cart.objects.filter(id_user=user)

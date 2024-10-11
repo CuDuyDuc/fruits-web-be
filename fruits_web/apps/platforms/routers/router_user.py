@@ -1,4 +1,6 @@
-from fruits_web.apps.platforms.routers import RegisterView, LoginAPIView, path, DeleteUserViewAPI, UserListView, CreateShopAPIView, UpdateUserViewAPI, SearchUserViewAPI,GetUserById
+from fruits_web.apps.platforms.routers import RegisterView, LoginAPIView, path, DeleteUserViewAPI, UserListView, CreateShopAPIView, UpdateUserViewAPI, SearchUserViewAPI,GetUserById, UpdateProfileView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('register-user/',RegisterView.as_view(),name='register-user'),
@@ -9,4 +11,8 @@ urlpatterns = [
     path('create-shop/', CreateShopAPIView.as_view(), name='create-shop'), 
     path('update-shop/<uuid:pk>', UpdateUserViewAPI.as_view(), name='update-shop'), 
     path('get-use-by-id/<uuid:pk>', GetUserById.as_view(), name='get-user-by-id'), 
+    path('update-profile/<uuid:pk>', UpdateProfileView.as_view(), name='update-profile'), 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
