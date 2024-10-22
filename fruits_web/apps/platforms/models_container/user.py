@@ -32,6 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=128, null=False, blank=False)
     full_name = models.CharField(max_length=128, null=True, blank=False)
     image = models.ImageField(upload_to=random_image_filename,default='image.png')
+    device_token = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True, blank=True)
     is_verified = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'

@@ -11,3 +11,5 @@ from django.contrib.auth.hashers import make_password
 from fruits_web.apps.platforms.serializers_container.user import *
 from fruits_web.apps.platforms.serializers_container.product import *
 from fruits_web.apps.platforms.serializers_container.cart import *
+from fruits_web.apps.platforms.serializers_container.notification import *
+from fruits_web.apps.platforms.utils.notification_service import *

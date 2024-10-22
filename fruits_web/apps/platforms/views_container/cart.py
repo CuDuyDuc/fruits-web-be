@@ -18,7 +18,6 @@ class AddCartViewAPI (generics.CreateAPIView):
             'message': 'Thêm thành công',
             'data': serializer.data  # Trả về dữ liệu đã lưu
         }, status=status.HTTP_201_CREATED)
-        
 class ListCartViewAPI(generics.ListAPIView):
     permission_classes = [IsUser]
     serializer_class = ListCartSerializer

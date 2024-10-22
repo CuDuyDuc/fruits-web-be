@@ -1,4 +1,5 @@
 from fruits_web.apps.platforms.serializers_container import serializers, Cart, Product
+from fruits_web.apps.platforms.utils.send_order_success_notification import send_order_success_notification
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -24,6 +25,7 @@ class AddCartSerializer(serializers.ModelSerializer):
             cart_item.quantity += validated_data.get('quantity', 1)
             cart_item.total_money = cart_item.quantity * cart_item.id_product.price  
             cart_item.save()
+            send_order_success_notification(cart_item)
             return cart_item
         except Cart.DoesNotExist:
             cart_item = Cart.objects.create(

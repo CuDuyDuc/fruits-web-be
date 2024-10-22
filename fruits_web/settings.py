@@ -16,6 +16,8 @@ from datetime import timedelta
 from django.conf import settings
 from dotenv import load_dotenv
 load_dotenv()
+import firebase_admin
+from firebase_admin import credentials
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

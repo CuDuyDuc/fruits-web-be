@@ -1,5 +1,5 @@
 from fruits_web.apps.platforms.serializers_container import serializers,User,RefreshToken,auth,AuthenticationFailed, make_password
-
+from fruits_web.apps.platforms.utils.notification_service import send_login_notification
 class UserSerializer (serializers.ModelSerializer):
     class Meta:
         model = User
@@ -56,7 +56,7 @@ class LoginSerializer(serializers.ModelSerializer):
         if not user.is_active:
             raise AuthenticationFailed('Account disabled, contact admin')
 
-        
+        send_login_notification(user)
         return {
             'email': user.email,
             'username': user.username,
